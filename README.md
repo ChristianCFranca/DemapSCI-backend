@@ -5,7 +5,7 @@ Implementação da API do servidor do Sistema de cadastro de infraestrutura não
 
 Este serviço foi construído para ser utilizado em um container [Docker](https://www.docker.com/). O banco de dados atualmente utilizado é o [PostgreSQL](https://www.postgresql.org/) (alterar dados de login no arquivo `database.py`). Caso o PostgreSQL não esteja disponível na máquina host, o banco de dados será alterado para o SQLite e um arquivo local será criado no diretório raíz do projeto.
 
-O serviço já está disponível utilizando a plataforma [Heroku](https://miro.medium.com/max/1838/1*fIjRtO5P8zc3pjs0E5hYkw.png) na URL https://demap-sci-backend.herokuapp.com/. 
+O serviço já está disponível utilizando a plataforma [Heroku](https://dashboard.heroku.com/) na URL https://demap-sci-backend.herokuapp.com/. 
 
 Para acessar a documentação criada dinamicamente pelo FastAPI, acessar o endpoint `/docs`: https://demap-sci-backend.herokuapp.com/docs
 
