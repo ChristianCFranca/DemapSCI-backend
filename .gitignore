@@ -6,6 +6,9 @@ __pycache__/
 # VS Code
 .vscode
 
+# DB
+sql-demap-sci.db
+
 # C extensions
 *.so
 
