@@ -19,7 +19,7 @@ models.Base.metadata.create_all(bind=engine)
 # ----------------------------------------------------------------------------------------
 
 # Define nosso router
-router = APIRouter(prefix="/energia/subestacoes", tags=["equipamentos"])
+router = APIRouter(prefix="/energia/subestacoes", tags=["Subestações"])
 
 # Rotas ----------------------------------------------------------------------------------
 @router.get("/", summary="Obtém todos as subestações", response_model=List[schemas.SubestacaoResponse])

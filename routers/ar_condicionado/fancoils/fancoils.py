@@ -19,7 +19,7 @@ models.Base.metadata.create_all(bind=engine)
 # ----------------------------------------------------------------------------------------
 
 # Define nosso router
-router = APIRouter(prefix="/ar-condicionado/fancoils", tags=["equipamentos"])
+router = APIRouter(prefix="/ar-condicionado/fancoils", tags=["Fan Coils"])
 
 # Rotas ----------------------------------------------------------------------------------
 @router.get("/", summary="Obtém todos os fancoils", response_model=List[schemas.FanCoilResponse])
