@@ -10,6 +10,7 @@ class FanCoilRequest(BaseModel):
     tag: str
     pavimento: str
     torre: str
+    fabricante: Optional[str] = Body(None)
     modelo: Optional[str] = Body(None)
     vazao: Optional[float] = Body(None)
     filtro: Optional[str] = Body(None)

@@ -10,6 +10,7 @@ class FanCoil(Base):
     tag = Column(String(50), index=True)
     pavimento = Column(String(20))
     torre = Column(String(20))
+    fabricante = Column(String(50), nullable=True)
     modelo = Column(String(50), nullable=True)
     vazao = Column(Numeric)
     filtro = Column(String(50), nullable=True)
