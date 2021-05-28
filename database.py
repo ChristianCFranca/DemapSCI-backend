@@ -1,24 +1,30 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from pymongo import MongoClient
+from CRUD.crud import DBCollectionCrudHandler
 import os
 
-DATABASE_URL = os.environ.get('DATABASE_URL')
-SQLALCHEMY_DATABASE_URL = DATABASE_URL if DATABASE_URL else "sqlite:///./sql-demap-sci.db"
+if os.path.exists(".env"): # Carrega as variaveis de ambiente de desenvolvimento
+    from dotenv import load_dotenv
+    load_dotenv()
 
-if not DATABASE_URL:
-    print("DATABASE_URL is not set. Serving SQLite database.")
-    engine = create_engine(
-        SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False} # Precisa apenas para o SQLite
-    )
+DATABASE_LOGIN = os.environ.get('DATABASE_LOGIN')
+DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
 
+if not DATABASE_LOGIN or not DATABASE_PASSWORD:
+  from dotenv import load_dotenv
+  load_dotenv()
+  DATABASE_LOGIN = os.environ.get('DATABASE_LOGIN')
+  DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
+  if not DATABASE_LOGIN or not DATABASE_PASSWORD:
+      raise Exception("No DATABASE_LOGIN or DATABASE_PASSWORD available.")
+  else:
+      print("\033[94m"+"INFO:" + "\033[0m" + "\t  Database data available through .env file! Connecting...")
 else:
-    print("DATABASE_URL available! Serving PostgreSQL database.")
-    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres", "postgresql") # Heroku use
-    engine = create_engine(
-        SQLALCHEMY_DATABASE_URL
-    )
+    print("\033[94m"+"INFO:" + "\033[0m" + "\t  Database data available! Connecting...")
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+URL = f"mongodb+srv://{DATABASE_LOGIN}:{DATABASE_PASSWORD}@cluster0.zj9tl.mongodb.net/Cluster0?"
+client = MongoClient(URL)
 
-Base = declarative_base()
+DB = 'demap-sci'
+db = client[DB]
+
+crud_handler = DBCollectionCrudHandler(db)

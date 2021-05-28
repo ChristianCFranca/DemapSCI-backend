@@ -1,12 +1,12 @@
-# Utilizado para debugging facilitar o deploy
-import uvicorn
-
 # Acessar variáveis de ambiente
 import os
 
+if os.path.exists(".env"): # Carrega as variaveis de ambiente de desenvolvimento
+    from dotenv import load_dotenv
+    load_dotenv()
+
 # Obtém as rotas disponíveis na API
-from routers.ar_condicionado.fancoils import fancoils
-from routers.energia.subestacoes import subestacoes
+from routers.ar_condicionado import crud_api
 
 # Importa a classe FastAPI para criar o APP
 from fastapi import FastAPI
@@ -14,14 +14,13 @@ from fastapi import FastAPI
 # Lidar com CORS
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="DEMAP-SCI", description="REST API para realizar cadastro de infraestrutura do Demap do Banco Central.", version="0.1.0")
+app = FastAPI(title="DEMAP-SCI", description="REST API para realizar cadastro de infraestrutura do Demap do Banco Central.", version="0.2.0")
 
 # Inclui as rotas disponíveis
-app.include_router(fancoils.router)
-app.include_router(subestacoes.router)
+app.include_router(crud_api.router)
 
 origins = [
-    "*" # Todos permitidos
+    "http://localhost:8080" # Todos permitidos por hora
 ]
 
 app.add_middleware(
@@ -35,7 +34,3 @@ app.add_middleware(
 @app.get("/", tags=["home"], summary="Home Page")
 async def home():
     return {"message": "Hello DEMAP-SCI!"}
-
-if __name__ == "__main__":
-    port = os.environ.get('PORT') if os.environ.get('PORT') else 80 # Para deploy no Heroku
-    uvicorn.run(app, host="0.0.0.0", port=port)
