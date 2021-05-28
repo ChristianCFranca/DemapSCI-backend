@@ -7,6 +7,7 @@ import json
 
 # Importa os typings para definir tipos de resposta esperados
 from typing import Optional, List
+from pydantic.error_wrappers import ValidationError
 
 # Importa o crud_handler para a coleção atual
 from database import crud_handler
@@ -19,26 +20,45 @@ from .schemas import FanCoilRequest, ChillerRequest, TorreRequest, BombaRequest,
 
 # Dependências ---------------------------------------------------------------------------
 
-ROUTE_SCHEMAS_DICT = {
-    'fancoils': FanCoilRequest,
-    'chillers': ChillerRequest,
-    'torres': TorreRequest,
-    'bombas': BombaRequest,
-    'splits': SplitRequest,
-    'selfs': SelfRequest,
-    'vrfcond': VRFCondRequest,
-    'vrfevap': VRFEvapRequest,
-}
+class ACTypeEquipmentsDict:
+    def __init__(self, ac_type: str):
+        self.ac_type = ac_type
+        self.ROUTE_SCHEMAS_DICT = {
+            'fancoils': FanCoilRequest,
+            'chillers': ChillerRequest,
+            'torres': TorreRequest,
+            'bombas': BombaRequest,
+            'splits': SplitRequest,
+            'selfs': SelfRequest,
+            'vrfconds': VRFCondRequest,
+            'vrfevaps': VRFEvapRequest,
+        }
 
-AC_TYPE = 'fancoils'
+    def set_ac_type(self, ac_type):
+        self.ac_type = ac_type
+
+    def __call__(self, document: dict):
+        try:
+            document = self.ROUTE_SCHEMAS_DICT[self.ac_type](**document)
+        except ValidationError:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Algum dos campos obrigatórios não foram fornecidos ou os campos estão incorretos.")
+            
+        if document.dataFabricacao:
+            document.dataFabricacao = str(document.dataFabricacao)
+        if document.dataInstalacao:
+            document.dataInstalacao = str(document.dataInstalacao)
+
+        return document.dict() # É transformado novamente pois isso filtra algumas keys perigosas como _id
+    
+ac_type_equipments_dict = ACTypeEquipmentsDict('fancoils')
+
 FIELDS_AS_PRIMARY_KEY = ['tag']
 
 def check_if_valid_collection_then_connect(ac_type: str):
-    if not crud_handler.collection_exists(ac_type) or ac_type not in ROUTE_SCHEMAS_DICT:
+    if not crud_handler.collection_exists(ac_type) or ac_type not in ac_type_equipments_dict.ROUTE_SCHEMAS_DICT:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Collection fornecida não existe")
     crud_handler.set_collection(ac_type) # Conecta o crud_handler à collection
-    global AC_TYPE
-    AC_TYPE = ac_type # Define o schema a ser utilizado
+    ac_type_equipments_dict.set_ac_type(ac_type)
     return ac_type
 
 def decode_jsonify_query(query_param):
@@ -58,14 +78,6 @@ def common_parameters(skip: Optional[int] = None, limit: Optional[int] = None, f
     parameters = {"skip": skip, "limit": limit, "filter": filter, "sort": sort, "projection": projection}
 
     return parameters
-
-def basemodel_to_dict(document: ROUTE_SCHEMAS_DICT[AC_TYPE]):
-    if document:
-        document.dataFabricacao = str(document.dataFabricacao)
-        document.dataInstalacao = str(document.dataInstalacao)
-        return document.dict()
-    else:
-        return dict()
 
 # Rotas ----------------------------------------------------------------------------------
 
@@ -88,12 +100,12 @@ def get_unique_values_in_col(col: str):
     return uniques
 
 @router.post("/{ac_type}/", summary="Cadastra um novo documento", dependencies=[Depends(check_if_valid_collection_then_connect)])
-def post_document(document: dict = Depends(basemodel_to_dict)):
+def post_document(document: dict = Depends(ac_type_equipments_dict)):
     result = crud_handler.insert_one(document, fields_primary_key=FIELDS_AS_PRIMARY_KEY)
     return {"detail": "Documento inserido com sucesso", "_id": result[0]}
 
 @router.put("/{ac_type}/{document_id}", summary="Altera um documento existente", dependencies=[Depends(check_if_valid_collection_then_connect)])
-def put_document(document_id: str, document: dict = Depends(basemodel_to_dict)):
+def put_document(document_id: str, document: dict = Depends(ac_type_equipments_dict)):
     filter = {'_id': document_id}
     result = crud_handler.find_one_and_update(filter=filter, updated_document=document)
     if not result:

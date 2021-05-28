@@ -110,7 +110,9 @@ class DBCollectionCrudHandler:
         """
         Retorna uma lista de todos os itens únicos de uma coluna
         """
-        uniques = list(self.collection.find().distinct(col_to_check)) # Paginação filtrada ordenada total
+        uniques = list(self.collection.distinct(col_to_check, query={col_to_check : {"$ne": None }})) # Paginação filtrada ordenada total
+        uniques = list(map(lambda value: value.strip(), uniques))
+        uniques = list(set(uniques))
 
         return uniques, len(uniques) != 0, len(uniques)
 

@@ -31,6 +31,8 @@ class FanCoilRequest(BaseModel):
 
 class ChillerRequest(BaseModel):
     tag: str
+    modelo: Optional[str] = Body(None)
+    fabricante: Optional[str] = Body(None)
     vazaoEvap: Optional[float] = Body(None)
     vazaoCond: Optional[float] = Body(None)
     tensao: Optional[int] = Body(None)
@@ -41,8 +43,6 @@ class ChillerRequest(BaseModel):
     tempSaidaEvap: Optional[float] = Body(None)
     tempEntradaCond: Optional[float] = Body(None)
     tempSaidaCond: Optional[float] = Body(None)
-    modelo: Optional[str] = Body(None)
-    fabricante: Optional[str] = Body(None)
     numeroSerie: Optional[str] = Body(None)
     tipoEnergia: Optional[str] = Body(None)
     tipoOleo: Optional[str] = Body(None)
@@ -53,6 +53,8 @@ class ChillerRequest(BaseModel):
 
 class TorreRequest(BaseModel):
     tag: str
+    modelo: Optional[str] = Body(None)
+    fabricante: Optional[str] = Body(None)
     vazaoAr: Optional[float] = Body(None)
     vazaoAgua: Optional[float] = Body(None)
     tensao: Optional[int] = Body(None)
@@ -61,8 +63,6 @@ class TorreRequest(BaseModel):
     correnteNominal: Optional[float] = Body(None)
     tempEntrada: Optional[float] = Body(None)
     tempSaida: Optional[float] = Body(None)
-    modelo: Optional[str] = Body(None)
-    fabricante: Optional[str] = Body(None)
     numeroSerie: Optional[str] = Body(None)
     tipoEnergia: Optional[str] = Body(None)
     dataFabricacao: Optional[date] = Body(None)
@@ -71,12 +71,12 @@ class TorreRequest(BaseModel):
 
 class BombaRequest(BaseModel):
     tag: str
-    vazao: Optional[float] = Body(None)
-    tensao: Optional[int] = Body(None)
-    potencia: Optional[float] = Body(None)
-    correnteNominal: Optional[float] = Body(None)
     modelo: Optional[str] = Body(None)
     fabricante: Optional[str] = Body(None)
+    vazao: Optional[float] = Body(None)
+    tensao: Optional[int] = Body(None)
+    potenciaMotor: Optional[float] = Body(None)
+    correnteNominal: Optional[float] = Body(None)
     numeroSerie: Optional[str] = Body(None)
     tipoEnergia: Optional[str] = Body(None)
     pressao: Optional[float] = Body(None)
@@ -87,14 +87,15 @@ class BombaRequest(BaseModel):
 
 class SplitRequest(BaseModel):
     tag: str
-    pavimento: Optional[float] = Body(None)
-    torre: Optional[int] = Body(None)
-    modeloEvap: Optional[str] = Body(None)
-    potEvap: Optional[float] = Body(None)
+    pavimento: str
+    torre: int
     modeloCond: Optional[str] = Body(None)
+    modeloEvap: Optional[str] = Body(None)
+    fabricante: Optional[str] = Body(None)
+    tensao: Optional[int] = Body(None)
+    potEvap: Optional[float] = Body(None)
     potCond: Optional[float] = Body(None)
     cargaTermica: Optional[float] = Body(None)
-    fabricante: Optional[str] = Body(None)
     tipoGas: Optional[str] = Body(None)
     tipoFiltro: Optional[str] = Body(None)
     numeroSerie: Optional[str] = Body(None)
