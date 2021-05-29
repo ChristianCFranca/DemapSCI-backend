@@ -20,7 +20,7 @@ app = FastAPI(title="DEMAP-SCI", description="REST API para realizar cadastro de
 app.include_router(crud_api.router)
 
 origins = [
-    "http://localhost:8080" # Todos permitidos por hora
+    "*"
 ]
 
 app.add_middleware(
