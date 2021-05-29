@@ -20,7 +20,9 @@ app = FastAPI(title="DEMAP-SCI", description="REST API para realizar cadastro de
 app.include_router(crud_api.router)
 
 origins = [
-    "*"
+    "http://localhost.com:8080",
+    "https://demap-sci-frontend.herokuapp.com/",
+    "https://demapsci.herokuapp.com/"
 ]
 
 app.add_middleware(
