@@ -105,19 +105,20 @@ class SplitRequest(BaseModel):
 
 class SelfRequest(BaseModel):
     tag: str
-    pavimento: Optional[float] = Body(None)
-    torre: Optional[int] = Body(None)
-    modeloEvap: Optional[str] = Body(None)
-    potEvap: Optional[float] = Body(None)
+    pavimento: str
+    torre: int
     modeloCond: Optional[str] = Body(None)
+    modeloEvap: Optional[str] = Body(None)
+    fabricante: Optional[str] = Body(None)
+    tensao: Optional[int] = Body(None)
+    potEvap: Optional[float] = Body(None)
     potCond: Optional[float] = Body(None)
     cargaTermica: Optional[float] = Body(None)
-    fabricante: Optional[str] = Body(None)
     tipoGas: Optional[str] = Body(None)
     filtro: Optional[str] = Body(None)
-    alturaDoFiltro: Optional[float] = Body(None)
-    larguraDoFiltro: Optional[float] = Body(None)
-    espessuraDoFiltro: Optional[float] = Body(None)
+    alturaFiltro: Optional[float] = Body(None)
+    larguraFiltro: Optional[float] = Body(None)
+    espessuraFiltro: Optional[float] = Body(None)
     numeroSerie: Optional[str] = Body(None)
     dataFabricacao: Optional[date] = Body(None)
     dataInstalacao: Optional[date] = Body(None)
@@ -126,29 +127,31 @@ class SelfRequest(BaseModel):
 class VRFCondRequest(BaseModel):
     tag: str
     tagEvap: Optional[str] = Body(None)
-    pavimento: Optional[float] = Body(None)
-    torreAla: Optional[int] = Body(None)
+    pavimento: str
+    torreAla: str
     modelo: Optional[str] = Body(None)
     fabricante: Optional[str] = Body(None)
+    tensao: Optional[int] = Body(None)
     potenciaMotor: Optional[float] = Body(None)
     cargaTermica: Optional[float] = Body(None)
-    tipoEnergia: Optional[str] = Body(None)
     tipoFiltro: Optional[str] = Body(None)
+    tipoEnergia: Optional[str] = Body(None)
     dataFabricacao: Optional[date] = Body(None)
     dataInstalacao: Optional[date] = Body(None)
     infAdicional: Optional[str] = Body(None)
 
 class VRFEvapRequest(BaseModel):
     tag: str
-    tagEvap: Optional[str] = Body(None)
-    pavimento: Optional[float] = Body(None)
-    torreAla: Optional[int] = Body(None)
+    tagCond: str
+    pavimento: str
+    torreAla: str
     modelo: Optional[str] = Body(None)
     fabricante: Optional[str] = Body(None)
+    tensao: Optional[int] = Body(None)
     potenciaMotor: Optional[float] = Body(None)
     cargaTermica: Optional[float] = Body(None)
-    tipoEnergia: Optional[str] = Body(None)
     tipoFiltro: Optional[str] = Body(None)
+    tipoEnergia: Optional[str] = Body(None)
     dataFabricacao: Optional[date] = Body(None)
     dataInstalacao: Optional[date] = Body(None)
     infAdicional: Optional[str] = Body(None)

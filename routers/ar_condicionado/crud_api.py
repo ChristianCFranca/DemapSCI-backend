@@ -38,11 +38,9 @@ class ACTypeEquipmentsDict:
         self.ac_type = ac_type
 
     def __call__(self, document: dict):
-        try:
-            document = self.ROUTE_SCHEMAS_DICT[self.ac_type](**document)
-        except ValidationError:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Algum dos campos obrigatórios não foram fornecidos ou os campos estão incorretos.")
-            
+        
+        document = self.ROUTE_SCHEMAS_DICT[self.ac_type](**document)
+        
         if document.dataFabricacao:
             document.dataFabricacao = str(document.dataFabricacao)
         if document.dataInstalacao:
