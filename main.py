@@ -21,8 +21,8 @@ app.include_router(crud_api.router)
 
 origins = [
     "http://localhost.com:8080",
-    "https://demap-sci-frontend.herokuapp.com/",
-    "https://demapsci.herokuapp.com/"
+    "https://demap-sci-frontend.herokuapp.com",
+    "https://demapsci.herokuapp.com"
 ]
 
 app.add_middleware(
