@@ -6,6 +6,7 @@ if os.path.exists(".env"): # Carrega as variaveis de ambiente de desenvolvimento
     load_dotenv()
 
 # Obtém as rotas disponíveis na API
+import auth
 from routers.ar_condicionado import crud_api
 
 # Importa a classe FastAPI para criar o APP
@@ -18,9 +19,10 @@ app = FastAPI(title="DEMAP-SCI", description="REST API para realizar cadastro de
 
 # Inclui as rotas disponíveis
 app.include_router(crud_api.router)
+app.include_router(auth.router)
 
 origins = [
-    "http://localhost.com:8080",
+    "http://localhost:8080",
     "https://demap-sci-frontend.herokuapp.com",
     "https://demapsci.herokuapp.com"
 ]
