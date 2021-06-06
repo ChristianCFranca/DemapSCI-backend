@@ -5,6 +5,10 @@ if os.path.exists(".env"): # Carrega as variaveis de ambiente de desenvolvimento
     from dotenv import load_dotenv
     load_dotenv()
 
+if os.path.exists("./packages"): # Para deploy no AWS Lambda
+    import sys
+    sys.path.insert(0, "./packages")
+
 # Obtém as rotas disponíveis na API
 import auth
 from routers.ar_condicionado import crud_api

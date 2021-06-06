@@ -7,6 +7,11 @@ __pycache__/
 # VS Code
 .vscode
 
+# AWS
+aws-lambda-deploy
+aws-lambda-package.zip
+packages
+
 # DB
 sql-demap-sci.db
 
