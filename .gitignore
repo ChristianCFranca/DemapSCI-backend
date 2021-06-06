@@ -8,8 +8,7 @@ __pycache__/
 .vscode
 
 # AWS
-aws-lambda-deploy
-aws-lambda-package.zip
+aws-lambda-deploy.zip
 packages
 
 # DB
