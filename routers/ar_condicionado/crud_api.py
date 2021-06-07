@@ -1,5 +1,6 @@
 # Importa a classe de rotas do FastAPI e todas as dependências úteis dela
-from fastapi import Depends, Query, HTTPException, APIRouter, status
+from fastapi import Depends, Query, HTTPException, status
+from fastapi import APIRouter as FastAPIRouter
 from auth import valid_user
 
 # Pegar o json da Query
@@ -7,10 +8,25 @@ import urllib
 import json
 
 # Importa os typings para definir tipos de resposta esperados
-from typing import Optional, List
+from typing import Optional, List, Any, Callable
 
 # Importa o crud_handler para a coleção atual
 from database import crud_handler
+
+# Classe que corrige o redirect 307 do starlette
+class APIRouter(FastAPIRouter):
+    def add_api_route(
+            self, path: str, endpoint: Callable[..., Any], *,
+            include_in_schema: bool = True, **kwargs: Any
+            ) -> None:
+        if path.endswith("/"):
+            alternate_path = path[:-1]
+        else:           
+            alternate_path = path + "/"
+        super().add_api_route(                                                 
+            alternate_path, endpoint, include_in_schema=False, **kwargs)
+        return super().add_api_route(
+            path, endpoint, include_in_schema=include_in_schema, **kwargs)
 
 # Define nosso router
 router = APIRouter(prefix="/ar-condicionado", tags=["Fan Coils"])
@@ -84,19 +100,6 @@ def get_documents(paginated: bool = False, getParameters: dict = Depends(common_
     documents, _, __, total_documents = crud_handler.find_all(**getParameters)
     return {"documents": documents, "total": total_documents} if paginated else documents
 
-@router.get("/{ac_type}", summary="Obtém todos os documentos", dependencies=[Depends(check_if_valid_collection_then_connect), Depends(valid_user)])
-def get_documents(paginated: bool = False, getParameters: dict = Depends(common_parameters)):
-    documents, _, __, total_documents = crud_handler.find_all(**getParameters)
-    return {"documents": documents, "total": total_documents} if paginated else documents
-
-@router.get("/{ac_type}/{document_id}/", dependencies=[Depends(check_if_valid_collection_then_connect)])
-def get_document(document_id: str):
-    filter = {'_id': document_id}
-    document, exists = crud_handler.find_one(filter)
-    if not exists:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Documento com o id fornecido não existe")
-    return document
-
 @router.get("/{ac_type}/{document_id}", dependencies=[Depends(check_if_valid_collection_then_connect)])
 def get_document(document_id: str):
     filter = {'_id': document_id}
@@ -104,11 +107,6 @@ def get_document(document_id: str):
     if not exists:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Documento com o id fornecido não existe")
     return document
-
-@router.get("/{ac_type}/unique/{col}/", dependencies=[Depends(check_if_valid_collection_then_connect), Depends(valid_user)])
-def get_unique_values_in_col(col: str):
-    uniques = crud_handler.find_unique(col)[0] # Devolve só o array
-    return uniques
 
 @router.get("/{ac_type}/unique/{col}", dependencies=[Depends(check_if_valid_collection_then_connect), Depends(valid_user)])
 def get_unique_values_in_col(col: str):
@@ -120,19 +118,6 @@ def post_document(document: dict = Depends(ac_type_equipments_dict)):
     result = crud_handler.insert_one(document, fields_primary_key=FIELDS_AS_PRIMARY_KEY)
     return {"detail": "Documento inserido com sucesso", "_id": result[0]}
 
-@router.post("/{ac_type}", summary="Cadastra um novo documento", dependencies=[Depends(check_if_valid_collection_then_connect), Depends(valid_user)])
-def post_document(document: dict = Depends(ac_type_equipments_dict)):
-    result = crud_handler.insert_one(document, fields_primary_key=FIELDS_AS_PRIMARY_KEY)
-    return {"detail": "Documento inserido com sucesso", "_id": result[0]}
-
-@router.put("/{ac_type}/{document_id}/", summary="Altera um documento existente", dependencies=[Depends(check_if_valid_collection_then_connect), Depends(valid_user)])
-def put_document(document_id: str, document: dict = Depends(ac_type_equipments_dict)):
-    filter = {'_id': document_id}
-    result = crud_handler.find_one_and_update(filter=filter, updated_document=document)
-    if not result:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Documento com o id fornecido não existe")
-    return {"detail": "Documento alterado com sucesso"}
-
 @router.put("/{ac_type}/{document_id}", summary="Altera um documento existente", dependencies=[Depends(check_if_valid_collection_then_connect), Depends(valid_user)])
 def put_document(document_id: str, document: dict = Depends(ac_type_equipments_dict)):
     filter = {'_id': document_id}
@@ -140,14 +125,6 @@ def put_document(document_id: str, document: dict = Depends(ac_type_equipments_d
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Documento com o id fornecido não existe")
     return {"detail": "Documento alterado com sucesso"}
-
-@router.delete("/{ac_type}/{document_id}/", summary="Deleta um documento existente", dependencies=[Depends(check_if_valid_collection_then_connect), Depends(valid_user)])
-def delete_document(document_id: str):
-    filter = {'_id': document_id}
-    result = crud_handler.find_one_and_delete(filter=filter)
-    if not result:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Documento com o id fornecido não existe")
-    return {"detail": "Documento removido com sucesso"}
 
 @router.delete("/{ac_type}/{document_id}", summary="Deleta um documento existente", dependencies=[Depends(check_if_valid_collection_then_connect), Depends(valid_user)])
 def delete_document(document_id: str):

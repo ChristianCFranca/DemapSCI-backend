@@ -5,7 +5,22 @@ if os.path.exists(".env"): # Carrega as variaveis de ambiente de desenvolvimento
     from dotenv import load_dotenv
     load_dotenv()
 
-if os.path.exists("./packages"): # Para deploy no AWS Lambda
+AWS_LAMBDA_ENV = os.environ.get('AWS_LAMBDA_ENV')
+
+if not AWS_LAMBDA_ENV:
+    print("\033[94mAWS_LAMBDA:\033[0m" + "\t  No AWS_LAMBDA_ENV env available. Loading as False...")
+    AWS_LAMBDA_ENV = False
+else:
+    if AWS_LAMBDA_ENV == "true":
+        AWS_LAMBDA_ENV = True
+    else:
+        AWS_LAMBDA_ENV = False
+
+if not os.path.exists("./packages") and AWS_LAMBDA_ENV:
+    print("\033[93mAWS_LAMBDA:\033[0m" + "\t  If AWS_LAMBDA_ENV is set, the \'packages\' folder must be provided. Setting AWS_LAMBDA_ENV to False...")
+    AWS_LAMBDA_ENV = False
+
+if AWS_LAMBDA_ENV:
     import sys
     sys.path.insert(0, "./packages")
 
@@ -42,3 +57,7 @@ app.add_middleware(
 @app.get("/", tags=["home"], summary="Home Page")
 async def home():
     return {"message": "Hello DEMAP-SCI!"}
+
+if AWS_LAMBDA_ENV: # Para deploy no AWS Lambda
+    from mangum import Mangum
+    handler = Mangum(app)
