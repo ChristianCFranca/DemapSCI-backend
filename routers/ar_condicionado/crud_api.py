@@ -18,7 +18,7 @@ from database import crud_handler
 # Para baixar como .csv
 import pandas as pd
 from datetime import date
-from io import StringIO
+from io import BytesIO, StringIO
 
 # Classe que corrige o redirect 307 do starlette
 class APIRouter(FastAPIRouter):
@@ -122,13 +122,14 @@ def download_documents(ac_type: str = Depends(check_if_valid_collection_then_con
 
     documents_df = find_and_transform_date(documents_df=documents_df, request_schema=current_schema)
 
-    csv_file = StringIO()
-    documents_df.to_csv(csv_file, index=False, sep=';', encoding='latin')
+    xlsx_file = BytesIO()
+    with pd.ExcelWriter(xlsx_file) as writer:
+        documents_df.to_excel(writer, index=False, encoding='utf-8')
+        writer.save()
 
     return StreamingResponse(
-        iter([csv_file.getvalue()]),
-        headers={"Content-Disposition": f"inline; filename=\"{ac_type}.csv\""},
-        media_type='text/csv'
+        iter([xlsx_file.getvalue()]),
+        media_type='application/xml'
     )
 
 @router.get("/{ac_type}/", summary="Obtém todos os documentos", dependencies=[Depends(check_if_valid_collection_then_connect), Depends(valid_user)])
