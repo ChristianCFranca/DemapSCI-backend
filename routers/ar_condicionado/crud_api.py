@@ -1,6 +1,8 @@
 # Importa a classe de rotas do FastAPI e todas as dependências úteis dela
+from re import S
 from fastapi import Depends, Query, HTTPException, status
 from fastapi import APIRouter as FastAPIRouter
+from fastapi.responses import StreamingResponse
 from auth import valid_user
 
 # Pegar o json da Query
@@ -12,6 +14,11 @@ from typing import Optional, List, Any, Callable
 
 # Importa o crud_handler para a coleção atual
 from database import crud_handler
+
+# Para baixar como .csv
+import pandas as pd
+from datetime import date
+from io import StringIO
 
 # Classe que corrige o redirect 307 do starlette
 class APIRouter(FastAPIRouter):
@@ -93,7 +100,36 @@ def common_parameters(skip: Optional[int] = None, limit: Optional[int] = None, f
 
     return parameters
 
+
+def find_and_transform_date(documents_df, request_schema):
+    documents = documents_df.copy()
+    for prop in request_schema.schema()['properties']:
+        if 'format' in request_schema.schema()['properties'][prop]:
+            if request_schema.schema()['properties'][prop]['format'] == 'date':
+                documents[prop] = documents[prop].apply(lambda x: date.fromisoformat(x).strftime("%d/%m/%Y") if not pd.isna(x) and x is not None else x)
+    return documents
+
 # Rotas ----------------------------------------------------------------------------------
+
+@router.get("/{ac_type}/download", summary="Baixa todos os documentos da rota em questão como um arquivo .csv", dependencies=[Depends(valid_user)])
+def download_documents(ac_type: str = Depends(check_if_valid_collection_then_connect)):
+    all_documents = crud_handler.find_all()[0]
+    if len(all_documents) == 0:
+        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="A tabela está vazia.")
+        
+    documents_df = pd.DataFrame.from_records(all_documents)
+    current_schema = ac_type_equipments_dict.ROUTE_SCHEMAS_DICT[ac_type_equipments_dict.ac_type]
+
+    documents_df = find_and_transform_date(documents_df=documents_df, request_schema=current_schema)
+
+    csv_file = StringIO()
+    documents_df.to_csv(csv_file, index=False, sep=';', encoding='latin')
+
+    return StreamingResponse(
+        iter([csv_file.getvalue()]),
+        headers={"Content-Disposition": f"inline; filename=\"{ac_type}.csv\""},
+        media_type='text/csv'
+    )
 
 @router.get("/{ac_type}/", summary="Obtém todos os documentos", dependencies=[Depends(check_if_valid_collection_then_connect), Depends(valid_user)])
 def get_documents(paginated: bool = False, getParameters: dict = Depends(common_parameters)):
