@@ -16,6 +16,7 @@ class FanCoilRequest(BaseModel):
     espessuraDoFiltro: Optional[float] = Body(None)
     cargaTermica: Optional[float] = Body(None)
     pressaoEstaticaDisponivel: Optional[float] = Body(None)
+    perdaDeCarga: Optional[float] = Body(None)
     tipoVentilador: Optional[str] = Body(None)
     modeloVentilador: Optional[str] = Body(None)
     potenciaMotor: Optional[float] = Body(None)
