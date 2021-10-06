@@ -28,6 +28,7 @@ class FanCoilRequest(BaseModel):
     tipoEnergia: Optional[str] = Body(None)
     dataFabricacao: Optional[date] = Body(None)
     dataInstalacao: Optional[date] = Body(None)
+    local: str
     infAdicional: Optional[str] = Body(None)
 
 class ChillerRequest(BaseModel):
@@ -50,6 +51,7 @@ class ChillerRequest(BaseModel):
     tipoGas: Optional[str] = Body(None)
     dataFabricacao: Optional[date] = Body(None)
     dataInstalacao: Optional[date] = Body(None)
+    local: str
     infAdicional: Optional[str] = Body(None)
 
 class TorreRequest(BaseModel):
@@ -68,6 +70,7 @@ class TorreRequest(BaseModel):
     tipoEnergia: Optional[str] = Body(None)
     dataFabricacao: Optional[date] = Body(None)
     dataInstalacao: Optional[date] = Body(None)
+    local: str
     infAdicional: Optional[str] = Body(None)
 
 class BombaRequest(BaseModel):
@@ -84,6 +87,7 @@ class BombaRequest(BaseModel):
     alturaMonometrica: Optional[float] = Body(None)
     dataFabricacao: Optional[date] = Body(None)
     dataInstalacao: Optional[date] = Body(None)
+    local: str
     infAdicional: Optional[str] = Body(None)
 
 class SplitRequest(BaseModel):
@@ -102,6 +106,7 @@ class SplitRequest(BaseModel):
     numeroSerie: Optional[str] = Body(None)
     dataFabricacao: Optional[date] = Body(None)
     dataInstalacao: Optional[date] = Body(None)
+    local: str
     infAdicional: Optional[str] = Body(None)
 
 class SelfRequest(BaseModel):
@@ -123,6 +128,7 @@ class SelfRequest(BaseModel):
     numeroSerie: Optional[str] = Body(None)
     dataFabricacao: Optional[date] = Body(None)
     dataInstalacao: Optional[date] = Body(None)
+    local: str
     infAdicional: Optional[str] = Body(None)
 
 class VRFCondRequest(BaseModel):
@@ -139,6 +145,7 @@ class VRFCondRequest(BaseModel):
     tipoEnergia: Optional[str] = Body(None)
     dataFabricacao: Optional[date] = Body(None)
     dataInstalacao: Optional[date] = Body(None)
+    local: str
     infAdicional: Optional[str] = Body(None)
 
 class VRFEvapRequest(BaseModel):
@@ -155,4 +162,5 @@ class VRFEvapRequest(BaseModel):
     tipoEnergia: Optional[str] = Body(None)
     dataFabricacao: Optional[date] = Body(None)
     dataInstalacao: Optional[date] = Body(None)
+    local: str
     infAdicional: Optional[str] = Body(None)
