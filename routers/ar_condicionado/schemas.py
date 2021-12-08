@@ -10,6 +10,7 @@ class FanCoilRequest(BaseModel):
     fabricante: Optional[str] = Body(None)
     modelo: Optional[str] = Body(None)
     vazao: Optional[float] = Body(None)
+    vazaoAgua: Optional[float] = Body(None)
     filtro: Optional[str] = Body(None)
     alturaFiltro: Optional[float] = Body(None)
     larguraFiltro: Optional[float] = Body(None)
