@@ -7,6 +7,7 @@ class FanCoilRequest(BaseModel):
     tag: str
     pavimento: str
     torre: str
+    ala: str
     fabricante: Optional[str] = Body(None)
     modelo: Optional[str] = Body(None)
     vazao: Optional[float] = Body(None)
@@ -95,6 +96,7 @@ class SplitRequest(BaseModel):
     tag: str
     pavimento: str
     torre: int
+    ala: str
     modeloCond: Optional[str] = Body(None)
     modeloEvap: Optional[str] = Body(None)
     fabricante: Optional[str] = Body(None)
@@ -114,6 +116,7 @@ class SelfRequest(BaseModel):
     tag: str
     pavimento: str
     torre: int
+    ala: str
     modeloCond: Optional[str] = Body(None)
     modeloEvap: Optional[str] = Body(None)
     fabricante: Optional[str] = Body(None)
@@ -136,7 +139,7 @@ class VRFCondRequest(BaseModel):
     tag: str
     tagEvap: Optional[str] = Body(None)
     pavimento: str
-    torreAla: str
+    ala: str
     modelo: Optional[str] = Body(None)
     fabricante: Optional[str] = Body(None)
     tensao: Optional[int] = Body(None)
@@ -153,7 +156,7 @@ class VRFEvapRequest(BaseModel):
     tag: str
     tagCond: str
     pavimento: str
-    torreAla: str
+    ala: str
     modelo: Optional[str] = Body(None)
     fabricante: Optional[str] = Body(None)
     tensao: Optional[int] = Body(None)
