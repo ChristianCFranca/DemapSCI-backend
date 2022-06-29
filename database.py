@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from CRUD.crud import DBCollectionCrudHandler
+from mongo_crud.crud import DBCollectionCrudHandler
 import os
 
 if os.path.exists(".env"): # Carrega as variaveis de ambiente de desenvolvimento

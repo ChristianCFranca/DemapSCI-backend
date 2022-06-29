@@ -168,3 +168,14 @@ class VRFEvapRequest(BaseModel):
     dataInstalacao: Optional[date] = Body(None)
     local: str
     infAdicional: Optional[str] = Body(None)
+
+ROUTE_SCHEMAS_DICT = {
+            'fancoils': FanCoilRequest,
+            'chillers': ChillerRequest,
+            'torres': TorreRequest,
+            'bombas': BombaRequest,
+            'splits': SplitRequest,
+            'selfs': SelfRequest,
+            'vrfconds': VRFCondRequest,
+            'vrfevaps': VRFEvapRequest,
+        }

@@ -26,7 +26,7 @@ if AWS_LAMBDA_ENV:
 
 # Obtém as rotas disponíveis na API
 import auth
-from routers.ar_condicionado import crud_api
+from app_crud import app_crud
 
 # Importa a classe FastAPI para criar o APP
 from fastapi import FastAPI
@@ -37,7 +37,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(title="DEMAP-SCI", description="REST API para realizar cadastro de infraestrutura do Demap do Banco Central.", version="0.2.0")
 
 # Inclui as rotas disponíveis
-app.include_router(crud_api.router)
+app.include_router(app_crud.router)
 app.include_router(auth.router)
 
 origins = [
