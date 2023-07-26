@@ -2,6 +2,7 @@
 from numpy import isin
 from .ar_condicionado.schemas import ROUTE_SCHEMAS_DICT as ac_dict
 from .energia.schemas import ROUTE_SCHEMAS_DICT as energy_dict
+from .ventilacao.schemas import ROUTE_SCHEMAS_DICT as vent_dict
 
 # Para verificação de erros
 from pydantic.error_wrappers import ValidationError
@@ -17,7 +18,8 @@ class EquipmentsTypeController:
         self.tipo = 'fancoils'
         self.ROUTE_SCHEMAS_DICT = {
             'ar-condicionado': ac_dict,
-            'energia': energy_dict
+            'energia': energy_dict,
+            'ventilacao': vent_dict
         }
 
     def category_exists(self, category):

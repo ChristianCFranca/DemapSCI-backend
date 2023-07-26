@@ -18,8 +18,8 @@ class DBCollectionCrudHandler:
             raise Exception("Collection deve ser uma string")
         self.collection = self.db[collection]
 
-    def collection_exists(self, ac_type) -> bool:
-        return ac_type in self.db.list_collection_names()
+    def collection_exists(self, equipment_type) -> bool:
+        return equipment_type in self.db.list_collection_names()
 
     def map_documents_ids(self, documents: List[dict]) -> List[dict]:
         """
